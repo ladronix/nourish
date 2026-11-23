@@ -1,0 +1,16 @@
+# Local development Postgres for Nourish. Production runs on Neon (HTTP driver).
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nourish-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nourish
+      POSTGRES_PASSWORD: nourish
+      POSTGRES_DB: nourish
+    ports:
+      - "5434:5432"
+    volumes:
+      - nourish-pgdata:/var/lib/postgresql/data
+volumes:
+  nourish-pgdata:

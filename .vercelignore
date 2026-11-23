@@ -1,0 +1,14 @@
+.secrets
+.env*
+!.env.example
+.playwright-mcp
+.next
+.next-build
+node_modules
+dist
+prompt.md
+prompt_typography.md
+.openai
+docker-compose.yml
+
+workers/

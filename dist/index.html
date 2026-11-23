@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111210" />
+    <meta name="description" content="Nourish OS — osobní jídelní plán, chytrá lednice a nákup bez administrativy." />
+    <title>Nourish OS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Hlavní navigace">
+        <button class="brand" data-section="today" aria-label="Nourish domů">
+          <span class="brand-mark">N</span>
+          <span>NOURISH</span>
+        </button>
+
+        <nav class="nav-list">
+          <button class="nav-item active" data-section="today"><span class="nav-icon">⌂</span><span>Dnes</span></button>
+          <button class="nav-item" data-section="plan"><span class="nav-icon">▦</span><span>Plán</span></button>
+          <button class="nav-item" data-section="fridge"><span class="nav-icon">▤</span><span>Lednice</span><span class="nav-badge">3</span></button>
+          <button class="nav-item" data-section="shopping"><span class="nav-icon">◒</span><span>Nákup</span></button>
+          <button class="nav-item" data-section="insights"><span class="nav-icon">⌁</span><span>Pokrok</span></button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+        <div class="streak-card">
+          <span class="eyebrow">SÉRIE</span>
+          <strong>12 dní</strong>
+          <span>plán bez stresu</span>
+          <div class="streak-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <button class="profile-chip">
+          <span class="avatar">MK</span>
+          <span><strong>Martin</strong><small>Osobní plán</small></span>
+          <span class="more">•••</span>
+        </button>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="page-kicker">PONDĚLÍ · 23. LISTOPADU</p>
+            <h1 id="page-title">Dobré ráno, Martine</h1>
+          </div>
+          <div class="top-actions">
+            <button class="icon-button" id="search-button" aria-label="Hledat">⌕</button>
+            <button class="sync-button" id="sync-button"><span class="sync-dot"></span><span>Data aktuální</span></button>
+            <button class="mobile-avatar avatar">MK</button>
+          </div>
+        </header>
+
+        <section class="page active" id="page-today" data-page="today">
+          <div class="hero-card">
+            <div class="hero-overlay"></div>
+            <div class="hero-copy">
+              <span class="pill pill-light">DNEŠNÍ RYTMUS · 4 JÍDLA</span>
+              <h2>Jez dobře.<br />Nemusíš nad tím přemýšlet.</h2>
+              <p>Plán je sestavený z toho, co máš doma. Jediná příprava dnes zabere 18 minut.</p>
+              <div class="hero-actions">
+                <button class="primary-button" data-scroll="timeline">Otevřít dnešní plán</button>
+                <button class="ghost-button" id="swap-day">Upravit den</button>
+              </div>
+            </div>
+            <div class="hero-stats" aria-label="Dnešní souhrn">
+              <div><strong>2 180</strong><span>kcal v plánu</span></div>
+              <div><strong>164 g</strong><span>bílkovin</span></div>
+              <div><strong>28 min</strong><span>celkem v kuchyni</span></div>
+            </div>
+          </div>
+
+          <div class="day-strip" aria-label="Výběr dne">
+            <button><span>PO</span><strong>23</strong><i></i></button>
+            <button class="selected"><span>ÚT</span><strong>24</strong><i></i></button>
+            <button><span>ST</span><strong>25</strong><i></i></button>
+            <button><span>ČT</span><strong>26</strong><i></i></button>
+            <button><span>PÁ</span><strong>27</strong><i></i></button>
+            <button><span>SO</span><strong>28</strong><i></i></button>
+            <button><span>NE</span><strong>29</strong><i></i></button>
+            <div class="daily-progress">
+              <span>Dnešní plán</span>
+              <strong><b id="done-count">1</b> / 4 hotovo</strong>
+              <div class="progress-track"><i id="meal-progress"></i></div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel macro-panel">
+              <div class="panel-heading">
+                <div><span class="eyebrow">ENERGIE A MAKRA</span><h3>Dnešní rovnováha</h3></div>
+                <button class="text-button" data-section="insights">Detail</button>
+              </div>
+              <div class="macro-layout">
+                <div class="calorie-ring" style="--value: 68">
+                  <div><strong>1 482</strong><span>z 2 180 kcal</span></div>
+                </div>
+                <div class="macro-list">
+                  <div><span class="macro-label"><i class="protein"></i>Bílkoviny</span><strong>112 <small>/ 164 g</small></strong><div><i style="width:68%"></i></div></div>
+                  <div><span class="macro-label"><i class="carbs"></i>Sacharidy</span><strong>146 <small>/ 224 g</small></strong><div><i style="width:65%"></i></div></div>
+                  <div><span class="macro-label"><i class="fat"></i>Tuky</span><strong>51 <small>/ 72 g</small></strong><div><i style="width:71%"></i></div></div>
+                </div>
+              </div>
+              <div class="balance-note"><span>✦</span><p><strong>Na dobré cestě.</strong> Večeře doplní bílkoviny i vlákninu bez překročení cíle.</p></div>
+            </article>
+
+            <article class="panel fridge-preview">
+              <div class="panel-heading">
+                <div><span class="eyebrow">MOJE KUCHYNĚ</span><h3>Co spotřebovat</h3></div>
+                <button class="text-button" data-section="fridge">Lednice</button>
+              </div>
+              <div class="freshness-score"><div class="fresh-icon">❄</div><div><strong>87 % zásob je čerstvých</strong><span>3 věci chtějí pozornost</span></div></div>
+              <ul class="expiry-list">
+                <li><span class="food-dot berries">●</span><div><strong>Maliny</strong><small>125 g · lednice</small></div><em>dnes</em></li>
+                <li><span class="food-dot avo">●</span><div><strong>Avokádo</strong><small>1 ks · zralé</small></div><em>zítra</em></li>
+                <li><span class="food-dot spinach">●</span><div><strong>Baby špenát</strong><small>80 g · otevřeno</small></div><em>2 dny</em></li>
+              </ul>
+              <button class="soft-button full" id="use-up-button">Najít jídlo z těchto surovin</button>
+            </article>
+
+            <article class="panel timeline-panel" id="timeline">
+              <div class="panel-heading">
+                <div><span class="eyebrow">DNEŠNÍ MENU</span><h3>Tvůj den, jídlo po jídle</h3></div>
+                <button class="more-button" aria-label="Další možnosti">•••</button>
+              </div>
+              <div class="meal-list">
+                <div class="meal-item completed" data-meal="0">
+                  <button class="meal-check" aria-label="Označit snídani">✓</button>
+                  <div class="meal-time"><strong>07:30</strong><span>Snídaně</span></div>
+                  <div class="meal-thumb meal-thumb-yogurt"></div>
+                  <div class="meal-copy"><strong>Řecký jogurt, lesní ovoce a mandle</strong><span>412 kcal · 31 g protein · hotovo za 3 min</span></div>
+                  <span class="status-pill done">Hotovo</span>
+                </div>
+                <div class="meal-item" data-meal="1">
+                  <button class="meal-check" aria-label="Označit oběd">○</button>
+                  <div class="meal-time"><strong>12:30</strong><span>Oběd</span></div>
+                  <div class="meal-thumb meal-thumb-chicken"></div>
+                  <div class="meal-copy"><strong>Bylinkové kuře, rýže a křupavý salát</strong><span>648 kcal · 54 g protein · krabička #2</span></div>
+                  <button class="mini-button">Recept</button>
+                </div>
+                <div class="meal-item" data-meal="2">
+                  <button class="meal-check" aria-label="Označit svačinu">○</button>
+                  <div class="meal-time"><strong>16:00</strong><span>Svačina</span></div>
+                  <div class="meal-thumb meal-thumb-egg"></div>
+                  <div class="meal-copy"><strong>Vejce, avokádo a žitný chléb</strong><span>384 kcal · 23 g protein · 7 min</span></div>
+                  <button class="mini-button">Recept</button>
+                </div>
+                <div class="meal-item" data-meal="3">
+                  <button class="meal-check" aria-label="Označit večeři">○</button>
+                  <div class="meal-time"><strong>19:15</strong><span>Večeře</span></div>
+                  <div class="meal-thumb meal-thumb-salmon"></div>
+                  <div class="meal-copy"><strong>Losos, batáty a zelené listy</strong><span>736 kcal · 56 g protein · 18 min</span></div>
+                  <button class="mini-button">Recept</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel cart-preview">
+              <div class="panel-heading">
+                <div><span class="eyebrow">CHYTRÝ NÁKUP</span><h3>Příští doplnění</h3></div>
+                <span class="live-label"><i></i> připraveno</span>
+              </div>
+              <p>Plán na další 4 dny potřebuje jen 11 položek. Zbytek už máš doma.</p>
+              <div class="retailer-toggle" role="group" aria-label="Obchod">
+                <button class="active" data-retailer="rohlik"><span class="retailer-mark rohlik">R</span>Rohlík</button>
+                <button data-retailer="kosik"><span class="retailer-mark kosik">K</span>Košík</button>
+              </div>
+              <div class="cart-summary"><div><span>11 položek</span><strong>≈ 1 246 Kč</strong></div><div><span>Pokryje</span><strong>4 dny</strong></div></div>
+              <div class="cart-avatars"><span>🥬</span><span>🍗</span><span>🫐</span><span>🥚</span><span>+7</span></div>
+              <button class="primary-button full" id="prepare-cart">Připravit košík na kontrolu</button>
+              <small class="safe-note">Objednávku vždy potvrdíš ty. Ceny a dostupnost ověří obchod.</small>
+            </article>
+
+            <article class="panel prep-panel">
+              <span class="eyebrow">NEDĚLNÍ MEAL PREP</span>
+              <h3>75 minut. Klid na 4 dny.</h3>
+              <p>Jeden koordinovaný blok připraví 9 porcí. Aplikace načasuje troubu, plotýnku i chlazení.</p>
+              <div class="prep-steps"><span><b>01</b>Rozehřát troubu</span><span><b>02</b>Uvařit základ</span><span><b>03</b>Rozdělit porce</span></div>
+              <button class="ghost-dark-button" id="prep-guide">Spustit průvodce přípravou</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="page" id="page-plan" data-page="plan">
+          <div class="section-intro">
+            <div><span class="eyebrow">TÝDEN 48</span><h2>Plán, který se přizpůsobí realitě.</h2><p>Využívá zásoby, čas v kalendáři i tvůj nutriční cíl.</p></div>
+            <button class="primary-button" id="regenerate-plan">✦ Přestavět týden</button>
+          </div>
+          <div class="week-summary">
+            <div><span>Průměrný den</span><strong>2 176 kcal</strong></div><div><span>Bílkoviny</span><strong>161 g / den</strong></div><div><span>Vaření</span><strong>2 h 18 min</strong></div><div><span>Využití zásob</span><strong>82 %</strong></div>
+          </div>
+          <div class="week-grid">
+            <article><header><span>PO</span><strong>23</strong><em>2 140 kcal</em></header><div class="week-meal chicken"><b>Oběd</b><span>Kuře s rýží</span></div><div class="week-meal salmon"><b>Večeře</b><span>Losos & batáty</span></div></article>
+            <article class="current"><header><span>ÚT</span><strong>24</strong><em>2 180 kcal</em></header><div class="week-meal yogurt"><b>Snídaně</b><span>Jogurt & ovoce</span></div><div class="week-meal egg"><b>Svačina</b><span>Vejce & avokádo</span></div></article>
+            <article><header><span>ST</span><strong>25</strong><em>2 205 kcal</em></header><div class="week-meal bowl"><b>Oběd</b><span>Hovězí bowl</span></div><div class="week-meal soup"><b>Večeře</b><span>Čočková polévka</span></div></article>
+            <article><header><span>ČT</span><strong>26</strong><em>2 130 kcal</em></header><div class="week-meal chicken"><b>Oběd</b><span>Kuřecí wrap</span></div><div class="week-meal salad"><b>Večeře</b><span>Halloumi salát</span></div></article>
+            <article><header><span>PÁ</span><strong>27</strong><em>2 230 kcal</em></header><div class="week-meal bowl"><b>Oběd</b><span>Teriyaki bowl</span></div><div class="week-meal free"><b>Večeře</b><span>Flexibilní jídlo</span></div></article>
+            <article class="weekend"><header><span>SO</span><strong>28</strong><em>volněji</em></header><div class="week-meal brunch"><b>Brunch</b><span>Vejce & toast</span></div><button class="add-meal">+ Přidat jídlo</button></article>
+            <article class="weekend"><header><span>NE</span><strong>29</strong><em>prep day</em></header><div class="week-meal prep"><b>17:00</b><span>Meal prep · 75 min</span></div><button class="add-meal">+ Přidat jídlo</button></article>
+          </div>
+        </section>
+
+        <section class="page" id="page-fridge" data-page="fridge">
+          <div class="section-intro">
+            <div><span class="eyebrow">54 POLOŽEK DOMA</span><h2>Lednice, která ví, co sníst první.</h2><p>Foto, účtenka nebo rychlé klepnutí. Žádné tabulky.</p></div>
+            <button class="primary-button" id="scan-fridge">▣ Naskenovat lednici</button>
+          </div>
+          <div class="inventory-top">
+            <div class="inventory-score"><div class="score-ring"><strong>87</strong><span>/ 100</span></div><div><span class="eyebrow">SKÓRE ČERSTVOSTI</span><h3>Skvěle zásobená kuchyň</h3><p>Tento týden zachráníš přibližně 460 Kč využitím zásob před expirací.</p></div></div>
+            <div class="inventory-stat"><span>Lednice</span><strong>28</strong><small>položek</small></div><div class="inventory-stat"><span>Mrazák</span><strong>11</strong><small>položek</small></div><div class="inventory-stat"><span>Spíž</span><strong>15</strong><small>položek</small></div>
+          </div>
+          <div class="inventory-toolbar"><div class="search-field">⌕ <input placeholder="Najít surovinu…" /></div><div class="filter-chips"><button class="active">Vše</button><button>Brzy spotřebovat</button><button>Bílkoviny</button><button>Zelenina</button></div></div>
+          <div class="inventory-grid">
+            <article class="inventory-card urgent"><div class="ingredient-visual berry-bg">🫐</div><span class="urgency">Dnes</span><h3>Maliny</h3><p>125 g · lednice</p><div class="fresh-bar"><i style="width:22%"></i></div><button>Naplánovat</button></article>
+            <article class="inventory-card"><div class="ingredient-visual avo-bg">🥑</div><span class="urgency soon">Zítra</span><h3>Avokádo</h3><p>1 ks · zralé</p><div class="fresh-bar"><i style="width:44%"></i></div><button>Naplánovat</button></article>
+            <article class="inventory-card"><div class="ingredient-visual spinach-bg">🥬</div><span class="urgency later">2 dny</span><h3>Baby špenát</h3><p>80 g · otevřeno</p><div class="fresh-bar"><i style="width:58%"></i></div><button>Naplánovat</button></article>
+            <article class="inventory-card"><div class="ingredient-visual salmon-bg">🐟</div><span class="urgency later">3 dny</span><h3>Losos</h3><p>320 g · lednice</p><div class="fresh-bar"><i style="width:68%"></i></div><button>Naplánovat</button></article>
+            <article class="inventory-card"><div class="ingredient-visual yogurt-bg">🥣</div><span class="urgency ok">7 dní</span><h3>Řecký jogurt</h3><p>450 g · lednice</p><div class="fresh-bar"><i style="width:91%"></i></div><button>Naplánovat</button></article>
+            <article class="inventory-card add-card"><span>＋</span><h3>Přidat položku</h3><p>fotkou, čárovým kódem nebo hlasem</p></article>
+          </div>
+        </section>
+
+        <section class="page" id="page-shopping" data-page="shopping">
+          <div class="section-intro">
+            <div><span class="eyebrow">CHYTRÝ NÁKUP</span><h2>Nakup jen to, co skutečně sníš.</h2><p>Plán minus zásoby doma. S výběrem konkrétních produktů pomůže Rohlík nebo Košík.</p></div>
+            <button class="primary-button" id="rebuild-cart">Aktualizovat podle plánu</button>
+          </div>
+          <div class="shopping-layout">
+            <div class="shopping-list panel">
+              <div class="panel-heading"><div><span class="eyebrow">DOPLNĚNÍ NA 4 DNY</span><h3>11 položek</h3></div><span class="estimate">odhad 1 246 Kč</span></div>
+              <div class="shopping-group"><h4>Čerstvé <span>5</span></h4><label><input type="checkbox" checked /><span>Kuřecí prsa</span><em>900 g</em></label><label><input type="checkbox" checked /><span>Losos filet</span><em>500 g</em></label><label><input type="checkbox" checked /><span>Baby špenát</span><em>200 g</em></label><label><input type="checkbox" checked /><span>Avokádo</span><em>3 ks</em></label><label><input type="checkbox" checked /><span>Lesní ovoce</span><em>400 g</em></label></div>
+              <div class="shopping-group"><h4>Chlazené <span>3</span></h4><label><input type="checkbox" checked /><span>Řecký jogurt 5 %</span><em>1 kg</em></label><label><input type="checkbox" checked /><span>Vejce M</span><em>10 ks</em></label><label><input type="checkbox" checked /><span>Halloumi</span><em>225 g</em></label></div>
+              <div class="shopping-group collapsed"><h4>Spíž <span>3</span></h4><button>Rozbalit</button></div>
+            </div>
+            <aside class="checkout-card">
+              <span class="eyebrow">PŘEDAT DO OBCHODU</span><h3>Vyber preferovaný nákup</h3>
+              <div class="store-choice active" data-store-choice="rohlik"><span class="retailer-mark rohlik">R</span><div><strong>Rohlík</strong><small>propojeno · doručení dnes</small></div><i>✓</i></div>
+              <div class="store-choice" data-store-choice="kosik"><span class="retailer-mark kosik">K</span><div><strong>Košík</strong><small>připojit účet</small></div><i>○</i></div>
+              <div class="checkout-rows"><div><span>Položky</span><strong>11</strong></div><div><span>Odhad</span><strong>1 246 Kč</strong></div><div><span>Úspora využitím zásob</span><strong class="positive">− 384 Kč</strong></div></div>
+              <button class="primary-button full" id="handoff-cart">Naplnit košík na Rohlíku</button>
+              <p class="safe-note">Nourish nic neobjedná bez tvého souhlasu. Náhrady, cenu i čas doručení zkontroluješ před platbou.</p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="page" id="page-insights" data-page="insights">
+          <div class="section-intro"><div><span class="eyebrow">POSLEDNÍCH 28 DNÍ</span><h2>Pokrok bez posedlosti čísly.</h2><p>Sleduj konzistenci, energii a udržitelnost plánu. Nejen váhu.</p></div><button class="soft-button">Upravit cíl</button></div>
+          <div class="insight-grid">
+            <article class="insight-card coral"><span>Konzistence</span><strong>86 %</strong><p>+9 % oproti minulému měsíci</p><div class="spark-bars"><i style="height:35%"></i><i style="height:58%"></i><i style="height:46%"></i><i style="height:72%"></i><i style="height:67%"></i><i style="height:88%"></i><i style="height:82%"></i></div></article>
+            <article class="insight-card green"><span>Průměr bílkovin</span><strong>157 g</strong><p>96 % osobního cíle</p><div class="goal-line"><i></i></div></article>
+            <article class="insight-card cream"><span>Ušetřený čas</span><strong>4 h 20 min</strong><p>díky meal prepu za měsíc</p><div class="clock-art">◷</div></article>
+            <article class="insight-card wide"><div><span class="eyebrow">TREND HMOTNOSTI</span><h3>Stabilní a udržitelný směr</h3><p>Tempo odpovídá nastavenému rozmezí. Plán není potřeba zpřísňovat.</p></div><div class="trend-chart"><span>−2,4 kg</span><svg viewBox="0 0 500 120" preserveAspectRatio="none"><path d="M0,20 C70,15 85,45 145,43 S225,65 270,60 S345,80 390,76 S455,104 500,96" fill="none" stroke="#ef765f" stroke-width="4" stroke-linecap="round"/><path d="M0,20 C70,15 85,45 145,43 S225,65 270,60 S345,80 390,76 S455,104 500,96 L500,120 L0,120 Z" fill="url(#fade)"/><defs><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ef765f" stop-opacity=".25"/><stop offset="1" stop-color="#ef765f" stop-opacity="0"/></linearGradient></defs></svg></div></article>
+          </div>
+          <div class="health-note"><span>i</span><p><strong>Nourish je nástroj pro plánování, ne zdravotnická aplikace.</strong> Cíle jsou orientační. Při zdravotním omezení, poruše příjmu potravy, těhotenství nebo léčbě řeš jídelníček s lékařem či nutričním terapeutem.</p></div>
+        </section>
+      </main>
+
+      <nav class="mobile-nav" aria-label="Mobilní navigace">
+        <button class="active" data-section="today"><span>⌂</span>Dnes</button><button data-section="plan"><span>▦</span>Plán</button><button data-section="fridge"><span>▤</span>Lednice</button><button data-section="shopping"><span>◒</span>Nákup</button><button data-section="insights"><span>⌁</span>Pokrok</button>
+      </nav>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span><p></p></div>
+    <div class="modal-backdrop" id="modal-backdrop" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button class="modal-close" id="modal-close" aria-label="Zavřít">×</button>
+        <span class="eyebrow">RYCHLÁ ÚPRAVA</span><h2 id="modal-title">Co dnes potřebuješ změnit?</h2><p>Nourish zachová tvůj cíl i zásoby a přestaví jen dnešní den.</p>
+        <div class="modal-options"><button>⏱ Méně času</button><button>🥗 Lehčí večeři</button><button>🍽 Jím venku</button><button>💪 Více bílkovin</button></div>
+        <button class="primary-button full" id="modal-apply">Přestavět dnešní plán</button>
+      </div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

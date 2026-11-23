@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local
+.playwright-mcp
+.next-build
+.secrets
+
+# Cloudflare worker build output
+workers/*/node_modules
+workers/*/.cloudflare
+workers/*/dist
+
+# Unrelated scratch prompts and hosting metadata
+/prompt.md
+/prompt_typography.md
+/.openai/
