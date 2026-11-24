@@ -15,40 +15,41 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx scripts/seed.ts",
     "hash-password": "tsx scripts/hash-password.ts",
-    "postinstall": "node -e \"require('fs').mkdirSync('public/barcode',{recursive:true});require('fs').copyFileSync('node_modules/zxing-wasm/dist/reader/zxing_reader.wasm','public/barcode/zxing_reader.wasm')\""
+    "postinstall": "node -e \"require('fs').mkdirSync('public/barcode',{recursive:true});require('fs').copyFileSync('node_modules/zxing-wasm/dist/reader/zxing_reader.wasm','public/barcode/zxing_reader.wasm')\"",
+    "secrets": "gitleaks git . --redact --no-banner",
+    "verify": "npm run typecheck && npm run lint && npm test && npm audit --audit-level=moderate && npm run secrets && next build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
     "@neondatabase/serverless": "^1.2.1",
     "@simplewebauthn/browser": "^14.0.0",
     "@simplewebauthn/server": "^14.1.0",
-    "@vercel/blob": "^2.9.0",
-    "ai": "^7.0.179",
-    "barcode-detector": "^3.2.4",
+    "ai": "^7.0.181",
+    "barcode-detector": "^3.2.5",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.4",
     "jose": "^6.2.18",
-    "lucide-react": "^1.77.0",
+    "lucide-react": "^1.79.0",
     "next": "16.4.6",
     "pg": "^8.23.1",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "server-only": "^0.0.1",
     "web-push": "^4.0.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@tailwindcss/turbopack": "4.3.3",
+    "@tailwindcss/turbopack": "^4.3.5",
     "@types/node": "^24.19.2",
     "@types/pg": "^8.23.1",
-    "@types/react": "^19",
+    "@types/react": "^19.3.1",
     "@types/react-dom": "^19",
     "@types/web-push": "^3.6.4",
     "dotenv": "^18.0.10",
     "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
-    "tailwindcss": "4.3.3",
+    "tailwindcss": "^4.3.5",
     "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^5.1.1"
@@ -58,5 +59,10 @@
     "esbuild@0.25.12": true,
     "esbuild@0.28.2": true,
     "fsevents@2.3.3": true
+  },
+  "overrides": {
+    "@esbuild-kit/core-utils": {
+      "esbuild": "^0.25.12"
+    }
   }
 }

@@ -57,6 +57,8 @@ npm run db:up                       # Postgres in Docker on :5434
 npm run db:push && npm run db:seed  # schema + 88 ingredients, 31 Czech recipes
 npm run dev                         # password without OWNER_PASSWORD_HASH: nourish-dev-heslo
 npm test                            # planner, shopping diff, TDEE, allergens, prep, cart matching
+npm run verify                      # before every push: typecheck, lint, tests, audit, gitleaks, build
+git config core.hooksPath .githooks # once per clone: gitleaks blocks commits with secrets
 ```
 
 ## Documentation
