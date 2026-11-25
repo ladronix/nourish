@@ -6,6 +6,7 @@ import { toMealView, greeting, fmt } from "@/lib/server/views";
 import { MealRow } from "@/components/meal-row";
 import { RebuildDayButton, GenerateWeekButton, WaterWidget, WeighInQuick } from "@/components/day-tools";
 import { QuickLog } from "@/components/quick-log";
+import { FridgeCookButton } from "@/components/fridge-cook";
 import { trendSeries } from "@/lib/domain/trend";
 import { proteinPerMealTarget } from "@/lib/domain/nutrition";
 import { formatQty } from "@/lib/domain/catalog";
@@ -48,6 +49,10 @@ export default async function Today({ searchParams }: { searchParams: Promise<{ 
   const ppm = proteinPerMealTarget(profile.weightKg);
   const lowProteinMeals = mealsWithRecipe.filter((m) => m.slotLabel !== "Svačina" && m.protein < ppm.min);
   const prep = week?.prep && week.prep.status !== "done" && week.prep.date >= today ? week.prep : null;
+  // Meals planned from a prep box that isn't in the fridge (prep not done yet, or portions eaten up).
+  const portionsByRecipe = new Map<string, number>();
+  for (const l of lots) if (l.kind === "portion" && l.recipeId && (!l.expiresOn || l.expiresOn >= today)) portionsByRecipe.set(l.recipeId, (portionsByRecipe.get(l.recipeId) ?? 0) + l.qty);
+  const prepGap = date === today ? views.map((v, i) => ({ ...v, slot: meals[i].slot })).filter((v) => v.fromPrep && v.status === "planned" && v.recipeId && (portionsByRecipe.get(v.recipeId) ?? 0) < v.servings - 0.01) : [];
 
   const remaining = Math.max(0, target.kcalMin - eaten.kcal);
   const balance =
@@ -105,6 +110,7 @@ export default async function Today({ searchParams }: { searchParams: Promise<{ 
                   Otevřít dnešní plán
                 </a>
                 <RebuildDayButton date={date} />
+                {date === today && <FridgeCookButton date={date} className="btn btn-ghost-light" label="Z lednice" />}
               </>
             ) : (
               <GenerateWeekButton weekStart={ws} />
@@ -149,6 +155,24 @@ export default async function Today({ searchParams }: { searchParams: Promise<{ 
           </div>
         </div>
       </nav>
+
+      {prepGap.length > 0 && (
+        <div className="note warn prep-gap" style={{ marginBottom: 16 }}>
+          <Info />
+          <div style={{ display: "grid", gap: 8 }}>
+            <div>
+              <strong>Krabička z meal prepu v lednici není</strong> — {prepGap.map((m) => `${m.slotLabel.toLowerCase()}: ${m.name}`).join(", ")}.
+              {prep ? ` Meal prep je naplánovaný na ${relativeDays(prep.date, today)}.` : " Meal prep tento týden neproběhl."} Vyber jídlo z toho, co máš doma.
+            </div>
+            <div className="row" style={{ flexWrap: "wrap", gap: 8 }}>
+              <FridgeCookButton date={date} slot={prepGap[0].slot} className="btn btn-sm btn-dark" label="Co uvařit z lednice" />
+              <Link className="btn btn-sm btn-ghost" href="/prep">
+                Udělat meal prep
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid-2">
         <div className="stack">

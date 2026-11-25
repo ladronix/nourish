@@ -468,3 +468,20 @@ h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.03em; marg
   .scan-row { grid-template-columns: auto minmax(0, 1fr); }
   .scan-row .qty { grid-column: 2; grid-template-columns: 110px auto; }
 }
+
+/* Fridge cook sheet ("Co uvařit z lednice") */
+.fc-card { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+.fc-card.fc-left { grid-template-columns: minmax(0, 1fr) auto; align-items: center; background: var(--green-soft); border-color: transparent; }
+.fc-card.fc-left small { display: block; color: var(--muted); font-size: 12.5px; }
+.fc-card.fc-ai { grid-template-columns: minmax(0, 1fr); background: var(--card-2); }
+.fc-emoji { font-size: 28px; line-height: 1; padding-top: 2px; }
+.fc-body { display: grid; gap: 4px; min-width: 0; }
+.fc-title { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
+.fc-title strong { font-size: 15px; line-height: 1.25; }
+.fc-meta { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); font-size: 12.5px; flex-wrap: wrap; }
+.fc-exp { color: var(--amber-ink); font-size: 12.5px; }
+.fc-miss { color: var(--coral-ink); font-size: 12.5px; }
+.fc-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.fc-ings { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 2px; font-size: 13px; }
+.fc-ings li { display: flex; gap: 6px; align-items: center; }
+.fc-steps { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: 13px; }

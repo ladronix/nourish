@@ -207,3 +207,40 @@ export async function structureRecipe(source: string, catalog: { id: string; nam
       source.slice(0, 18000),
   );
 }
+
+export const FridgeImproviseSchema = z.object({
+  ideas: z
+    .array(
+      z.object({
+        name: z.string().describe("Krátký český název jídla"),
+        minutes: z.number().describe("Celkový čas přípravy v minutách"),
+        servings: z.number().describe("Počet porcí"),
+        kcal: z.number().describe("kcal na porci (odhad)"),
+        protein: z.number().describe("g bílkovin na porci (odhad)"),
+        ingredients: z.array(z.object({ name: z.string(), amount: z.string().describe("např. 2 ks, 150 g"), fromFridge: z.boolean().describe("true = je v seznamu zásob") })),
+        steps: z.array(z.string()).describe("3–6 krátkých kroků"),
+        why: z.string().describe("Proč právě tohle: co spotřebuje, co brzy expiruje"),
+      }),
+    )
+    .describe("2–3 nápady"),
+});
+
+/**
+ * Free-form "what can I make from this" ideas for food that isn't covered by saved recipes.
+ * Only the stock list and dietary limits are sent — no weight, goals or health data.
+ */
+export async function improviseFromFridge(p: { stock: { name: string; qty: string; daysLeft: number | null }[]; slotLabel: string; kcalTarget: number; proteinTarget: number; maxMinutes: number; allergens: string[]; dislikes: string[]; dietTags: string[] }) {
+  return structured(
+    FridgeImproviseSchema,
+    SYSTEM_CZ,
+    `Navrhni 2–3 jídla na ${p.slotLabel.toLowerCase()} POUZE ze zásob níže (plus běžné základy: olej, sůl, pepř, koření, ocet, mouka). ` +
+      `Maximálně jedna drobná surovina navíc a označ ji fromFridge=false. Přednostně spotřebuj věci, které brzy expirují. ` +
+      `Cíl na JEDNU porci: zhruba ${Math.round(p.kcalTarget)} kcal a aspoň ${Math.round(p.proteinTarget)} g bílkovin — množství surovin tomu přizpůsob (dost bílkovin a přílohy, ne jen ozdoba). Čas do ${p.maxMinutes} minut. ` +
+      `Množství piš v g nebo ks (např. "180 g", "2 ks"). Nevymýšlej, že něco brzy expiruje, pokud to v seznamu není uvedeno. ` +
+      (p.allergens.length ? `NIKDY nepoužij alergeny: ${p.allergens.join(", ")}. ` : "") +
+      (p.dislikes.length ? `Nepoužívej: ${p.dislikes.join(", ")}. ` : "") +
+      (p.dietTags.length ? `Styl stravy: ${p.dietTags.join(", ")}. ` : "") +
+      `Realistická česká domácí kuchyně, přesná množství, kroky stručně.\n\nZÁSOBY:\n` +
+      p.stock.map((s) => `- ${s.name} (${s.qty}${s.daysLeft != null ? `, expiruje za ${s.daysLeft} d` : ""})`).join("\n"),
+  );
+}

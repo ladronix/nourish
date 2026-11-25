@@ -3,6 +3,7 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { estimateExpiry, type IngredientLite, type Location, type RecipeLite, type Unit } from "@/lib/domain/catalog";
 import { todayISO, addDays } from "@/lib/domain/dates";
+import { inLotUnit, matchIngredientByName, substitutesFor } from "@/lib/domain/fridge-cook";
 
 /**
  * Apply one inventory movement atomically and idempotently:
@@ -26,19 +27,26 @@ export async function applyMove(opts: { lotId: number; delta: number; reason: "a
   return Array.isArray(rows) && rows.length > 0;
 }
 
-/** Take `qty` of an ingredient from active lots, first-expiring first (FEFO). */
-export async function consumeIngredient(ingredientId: string, qty: number, keyPrefix: string, plannedMealId?: number) {
-  const lots = await db
+/**
+ * Take `qty` (in the ingredient's unit) from active lots, first-expiring first (FEFO).
+ * With `ings`, free-text lots (e.g. from a fridge photo, no catalog id) that match by name count too,
+ * and quantities are converted to each lot's own unit (8 ks of tomatoes vs. grams in a recipe).
+ */
+export async function consumeIngredient(ingredientId: string, qty: number, keyPrefix: string, plannedMealId?: number, ings?: Map<string, IngredientLite>) {
+  const ing = ings?.get(ingredientId);
+  const all = await db
     .select()
     .from(schema.inventoryLots)
-    .where(and(eq(schema.inventoryLots.ingredientId, ingredientId), eq(schema.inventoryLots.status, "active"), eq(schema.inventoryLots.kind, "raw")))
+    .where(and(eq(schema.inventoryLots.status, "active"), eq(schema.inventoryLots.kind, "raw"), ing ? sql`(${schema.inventoryLots.ingredientId} = ${ingredientId} OR ${schema.inventoryLots.ingredientId} IS NULL)` : eq(schema.inventoryLots.ingredientId, ingredientId)))
     .orderBy(sql`${schema.inventoryLots.expiresOn} asc nulls last`, asc(schema.inventoryLots.addedAt));
+  const lots = all.filter((l) => l.ingredientId === ingredientId || (ings && !l.ingredientId && matchIngredientByName(l.name, ings) === ingredientId));
   let left = qty;
   for (const lot of lots) {
     if (left <= 0.0001) break;
-    const take = Math.min(lot.qty, left);
+    const want = ing ? inLotUnit(left, lot.unit, ing) : left;
+    const take = Math.min(lot.qty, want);
     await applyMove({ lotId: lot.id, delta: -take, reason: "consume", key: `${keyPrefix}:${lot.id}`, plannedMealId });
-    left -= take;
+    left -= ing ? (want > 0 ? (take / want) * left : 0) : take;
   }
   return { missing: Math.max(0, left) };
 }
@@ -49,7 +57,12 @@ export async function consumeRecipe(recipe: RecipeLite, servings: number, keyPre
     if (it.optional) continue;
     const ing = ings.get(it.ingredientId);
     if (!ing || ing.isStaple) continue;
-    const r = await consumeIngredient(it.ingredientId, (it.qty / recipe.servings) * servings, `${keyPrefix}:${it.ingredientId}`, plannedMealId);
+    let r = await consumeIngredient(it.ingredientId, (it.qty / recipe.servings) * servings, `${keyPrefix}:${it.ingredientId}`, plannedMealId, ings);
+    // Cooked with a substitute (turkey for chicken, bread for a tortilla…): take the rest from it.
+    for (const sub of substitutesFor(it.ingredientId)) {
+      if (r.missing <= 0.01 || !ings.has(sub)) break;
+      r = await consumeIngredient(sub, r.missing, `${keyPrefix}:${it.ingredientId}:sub:${sub}`, plannedMealId, ings);
+    }
     if (r.missing > 0.01) missing.push(ing.name);
   }
   return { missing };

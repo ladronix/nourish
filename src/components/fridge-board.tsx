@@ -5,6 +5,7 @@ import { addInventory, addInventoryBulk, consumeLot, discardLot, updateLot, type
 import { Sheet } from "./sheet";
 import { useToast } from "./toast";
 import { PhotoPick } from "./photo-pick";
+import { FridgeCookButton } from "./fridge-cook";
 import { postImage, uid } from "./media";
 import { BarcodeScanner, lookupBarcode } from "./barcode-scanner";
 
@@ -134,6 +135,7 @@ export function FridgeBoard({ lots, ingredients }: { lots: LotView[]; ingredient
           <button className="btn btn-sm btn-soft" onClick={() => (setScanMode("receipt"), setAdd("scan"))}>
             <Receipt size={16} /> Účtenka
           </button>
+          <FridgeCookButton className="btn btn-sm btn-dark" label="Co uvařit" />
         </div>
       </div>
       <div className="chips" style={{ marginBottom: 14 }}>

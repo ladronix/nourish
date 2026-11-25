@@ -4,6 +4,7 @@ import { scanInventory, aiAvailable, aiErrorMessage } from "@/lib/server/ai";
 import { getCatalog } from "@/lib/server/data";
 import { estimateExpiry } from "@/lib/domain/catalog";
 import { todayISO } from "@/lib/domain/dates";
+import { matchIngredientByName } from "@/lib/domain/fridge-cook";
 
 export const maxDuration = 120;
 
@@ -20,7 +21,11 @@ export async function POST(req: Request) {
     const out = await scanInventory(new Uint8Array(await file.arrayBuffer()), file.type, mode, ingredientRows.map((i) => ({ id: i.id, name: i.name, unit: i.unit })), today);
     // Never trust IDs blindly; fill missing expiry from the shelf-life table. Everything goes to review.
     const items = (out?.items ?? []).filter((it) => it.qty > 0 && !/^(jiné|ostatní|další)\b/i.test(it.name.trim())).map((it) => {
-      const ing = it.ingredientId ? ingredients.get(it.ingredientId) : undefined;
+      // The model often leaves catalog id empty for things it read off a label — match by name ourselves.
+      const ing = (it.ingredientId ? ingredients.get(it.ingredientId) : undefined) ?? (() => {
+        const id = matchIngredientByName(it.name, ingredients);
+        return id ? ingredients.get(id) : undefined;
+      })();
       // Small models often say "6 g" of tomatoes meaning 6 pieces — convert pieces to the catalog unit.
       let qty = it.qty;
       if (ing && ing.unit !== "ks" && (it.unit === "ks" || (it.qty > 0 && it.qty < 20))) {
