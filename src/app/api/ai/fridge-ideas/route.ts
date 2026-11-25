@@ -42,7 +42,10 @@ export async function POST(req: Request) {
     const domainLots = lots.map((l) => ({ id: l.id, ingredientId: l.ingredientId, recipeId: l.recipeId, kind: l.kind, name: l.name, qty: l.qty, unit: l.unit, expiresOn: l.expiresOn }));
     const ideas = (out?.ideas ?? []).map((i) => {
       const g = groundIdea(i, catalog.ingredients, domainLots, today);
-      return { ...i, ingredients: g.items, kcal: g.kcal ?? i.kcal, protein: g.protein ?? i.protein, estimated: g.kcal != null ? "catalog" : "ai" };
+      const kcal = g.kcal ?? i.kcal;
+      // Small models write side-dish amounts; tell the owner how much to scale up to hit the meal target.
+      const scale = kcal > 0 && kcal < kcalTarget * 0.75 ? Math.min(3, Math.round((kcalTarget / kcal) * 2) / 2) : 1;
+      return { ...i, ingredients: g.items, kcal, protein: g.protein ?? i.protein, estimated: g.kcal != null ? "catalog" : "ai", scale };
     });
     return NextResponse.json({ ideas });
   } catch (e) {

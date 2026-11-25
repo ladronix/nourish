@@ -8,7 +8,7 @@ import { getFridgeIdeas, applyFridgeIdea, eatLeftover, rebuildDayFromFridge, typ
 import { logFood } from "@/app/actions/log";
 import type { MealSlot } from "@/lib/domain/catalog";
 
-type AiIdea = { name: string; minutes: number; servings: number; kcal: number; protein: number; ingredients: { name: string; amount: string; fromFridge: boolean; staple?: boolean }[]; steps: string[]; why: string; estimated: "catalog" | "ai" };
+type AiIdea = { name: string; minutes: number; servings: number; kcal: number; protein: number; ingredients: { name: string; amount: string; fromFridge: boolean; staple?: boolean }[]; steps: string[]; why: string; estimated: "catalog" | "ai"; scale: number };
 
 const fmt = (n: number) => Math.round(n).toLocaleString("cs-CZ");
 const portions = (s: number) => (s === 1 ? "1 porce" : `${String(s).replace(".", ",")} porce`);
@@ -103,7 +103,7 @@ function FridgeCookSheet({ date, initialSlot, onClose }: { date?: string; initia
             {view?.prepPending && (
               <>
                 {" "}
-                <Link href="/prep">Meal prep je naplánovaný na {view.prepPending.date.split("-").reverse().slice(0, 2).join(". ")}.</Link>
+                <Link href="/prep">{view.prepPending.date < view.date ? "Meal prep tento týden neproběhl — můžeš ho udělat teď." : `Meal prep je naplánovaný na ${view.prepPending.date.split("-").reverse().slice(0, 2).join(". ")}.`}</Link>
               </>
             )}
           </div>
@@ -231,6 +231,11 @@ function FridgeCookSheet({ date, initialSlot, onClose }: { date?: string; initia
               <small className="fc-meta">
                 <Clock size={13} /> {Math.round(a.minutes)} min · {fmt(a.kcal)} kcal · {fmt(a.protein)} g B na porci ({a.estimated === "catalog" ? "spočítáno ze surovin" : "odhad AI"})
               </small>
+              {a.scale > 1 && (
+                <small className="fc-exp">
+                  Na tvůj cíl vezmi zhruba {String(a.scale).replace(".", ",")}× tolik → ≈ {fmt(a.kcal * a.scale)} kcal · {fmt(a.protein * a.scale)} g B
+                </small>
+              )}
               <small className="muted">{a.why}</small>
               <ul className="fc-ings">
                 {a.ingredients.map((g, j) => (
@@ -250,7 +255,7 @@ function FridgeCookSheet({ date, initialSlot, onClose }: { date?: string; initia
                   disabled={pending}
                   onClick={() =>
                     start(async () => {
-                      await logFood({ date: view?.date ?? new Date().toISOString().slice(0, 10), slot: view?.active ?? null, name: a.name, kcal: Math.max(0, a.kcal), protein: Math.max(0, a.protein), source: "inventory", confidence: 0.6 });
+                      await logFood({ date: view?.date ?? new Date().toISOString().slice(0, 10), slot: view?.active ?? null, name: a.scale > 1 ? `${a.name} (${String(a.scale).replace(".", ",")}×)` : a.name, kcal: Math.max(0, a.kcal * a.scale), protein: Math.max(0, a.protein * a.scale), source: "inventory", confidence: 0.6 });
                       toast(`Zapsáno: ${a.name}. Suroviny si odepiš v Lednici.`);
                       onClose();
                     })
